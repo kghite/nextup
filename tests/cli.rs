@@ -1,31 +1,37 @@
 use assert_cmd::prelude::*;
+use assert_fs::prelude::*;
 use predicates::prelude::*;
 use std::process::Command;
 
 #[test]
-fn file_doesnt_exist() -> Result<(), Box<dyn std::error::Error>> {
+fn set_project_title() -> Result<(), Box<dyn std::error::Error>> {
     let mut cmd = Command::cargo_bin("nextup")?;
-
-    cmd.arg("foobar").arg("test/file/doesnt/exist");
+    cmd.arg("set").arg("b").arg("test text");
     cmd.assert()
-        .failure()
-        .stderr(predicate::str::contains("file"));
+        .success()
+        .stdout(predicate::str::contains("test text"));
 
     Ok(())
 }
 
-use assert_fs::prelude::*;
-
 #[test]
-fn find_content_in_file() -> Result<(), Box<dyn std::error::Error>> {
-    let file = assert_fs::NamedTempFile::new("sample.txt")?;
-    file.write_str("A test\nActual content\nMore content\nAnother test")?;
-
+fn set_project_nextup() -> Result<(), Box<dyn std::error::Error>> {
     let mut cmd = Command::cargo_bin("nextup")?;
-    cmd.arg("test").arg(file.path());
+    cmd.arg("b").arg("test nextup");
     cmd.assert()
         .success()
-        .stdout(predicate::str::contains("test\nAnother test"));
+        .stdout(predicate::str::contains("test text"));
+
+    Ok(())
+}
+
+#[test]
+fn reset_project() -> Result<(), Box<dyn std::error::Error>> {
+    let mut cmd = Command::cargo_bin("nextup")?;
+    cmd.arg("reset");
+    cmd.assert()
+        .success()
+        .stdout(predicate::str::contains("reset all projects"));
 
     Ok(())
 }

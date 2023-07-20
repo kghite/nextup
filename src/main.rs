@@ -4,9 +4,11 @@ extern crate confy;
 extern crate serde_derive;
 
 pub mod cli;
+
 pub use crate::cli::config::*;
 pub use crate::cli::interface;
 
+use crate::interface::commands;
 use anyhow::{Context, Result};
 use log;
 
@@ -97,5 +99,5 @@ fn main() -> Result<()> {
 
 #[test]
 fn verify_cmd() {
-    cli().debug_assert();
+    commands().debug_assert();
 }
