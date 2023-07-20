@@ -3,101 +3,62 @@ extern crate confy;
 #[macro_use]
 extern crate serde_derive;
 
+use anyhow::Result;
+use log;
+
 pub mod cli;
 
 pub use crate::cli::config::*;
 pub use crate::cli::interface;
-
-use crate::interface::commands;
-use anyhow::{Context, Result};
-use log;
+pub use crate::cli::writer;
 
 /// nextup CLI app
 ///
 /// Allow the user to set up to 3 projects and update their 'nextup' tasks
 fn main() -> Result<()> {
+    let app_name: &str = env!("CARGO_PKG_NAME");
+
     // Init logger
     env_logger::init();
     log::debug!("Running nextup");
 
-    // Load the current nextups
-    let cfg: NextupConfig = confy::load("nextup", None)
-        .with_context(|| format!("Could not read the saved nextup data."))?;
-    log::debug!("Loaded config: {:?}", &cfg);
+    // Load the current projects
+    let mut projects: Vec<Project> = load_projects(app_name)?;
 
-    // Convert config data to project format
-    let mut projects: Vec<Project> = config_to_projects(cfg);
-
-    // Get commands
+    // Map commands
     let matches = interface::commands().get_matches();
-
     match matches.subcommand() {
+        // Reset all projects and nextups
         Some(("reset", _sub_matches)) => {
-            log::debug!("'nextup reset' was called");
-            for project in projects.iter_mut() {
-                project.title = String::from(DEFAULT_FILL);
-                project.nextup = String::from(DEFAULT_FILL);
-            }
-            println!("reset all projects");
+            writer::reset_to_defaults(&mut projects);
         }
+        // Set a project title
         Some(("set", sub_matches)) => {
-            log::debug!(
-                "'nextup set' was called with project: {:?}, description: {:?}",
-                sub_matches.get_one::<String>("project"),
-                sub_matches.get_one::<String>("title"),
-            );
-            let index: usize = map_project_id(sub_matches.get_one::<String>("project"));
-            let set_project = &mut projects[index];
-            set_project.title = sub_matches
-                .get_one::<String>("title")
-                .expect("Assumed safe to unwrap due to CLI checker")
-                .clone();
-            println!("{}", set_project);
+            writer::write_title(&mut projects, sub_matches);
         }
         _ => {
+            // Set a project's nextup
             if let Some(_nextup) = matches.get_one::<String>("nextup") {
-                log::debug!(
-                    "'nextup' was called with project: {:?}, nextup: {:?}",
-                    matches.get_one::<String>("project"),
-                    matches.get_one::<String>("nextup"),
-                );
-                let index: usize = map_project_id(matches.get_one::<String>("project"));
-                let set_project = &mut projects[index];
-                set_project.nextup = matches
-                    .get_one::<String>("nextup")
-                    .expect("Assumed safe to unwrap due to CLI checker")
-                    .clone();
-                println!("{}", set_project);
-            } else if let Some(_project) = matches.get_one::<String>("project") {
-                log::debug!(
-                    "'nextup' was called with project: {:?}",
-                    matches.get_one::<String>("project"),
-                );
-                let index: usize = map_project_id(matches.get_one::<String>("project"));
-                println!("{}", projects[index]);
-            } else {
-                log::debug!("'nextup' was called");
-                let lineup: Vec<&str> = vec!["a", "b", "c"];
-                for (i, project) in projects.iter().enumerate() {
-                    println!("{}: {}", lineup[i], project);
-                }
+                writer::write_nextup(&mut projects, matches);
+            }
+            // Show a project
+            else if let Some(_project) = matches.get_one::<String>("project") {
+                writer::report_project(&mut projects, matches);
+            }
+            // Show all projects
+            else {
+                writer::report_projects(&mut projects);
             }
         }
     }
 
-    // Convert project data to config format
-    let upd_cfg: NextupConfig = NextupConfig::from(projects);
-
-    // Save any nextup updates
-    confy::store("nextup", None, &upd_cfg)
-        .with_context(|| format!("Could not read the saved nextup data."))?;
-
-    log::debug!("Saved config: {:?}", &upd_cfg);
+    // Save the updated projects
+    save_projects(app_name, projects)?;
 
     Ok(())
 }
 
 #[test]
 fn verify_cmd() {
-    commands().debug_assert();
+    interface::commands().debug_assert();
 }

@@ -8,6 +8,13 @@ const HELP: &str = "For best results, update a nextup when switching away from a
      record one achievable action to complete when you next pick it up or simply capture the \
      state you are leaving things in.";
 
+/// Define all commands and args for the nextup app
+///
+/// nextup
+/// nextup <a, b, c>
+/// nextup set <a, b, c> <title>
+/// nextup <a, b, c> <nextup>
+/// /// nextup reset
 pub fn commands() -> Command {
     Command::new("nextup")
         .about(ABOUT)

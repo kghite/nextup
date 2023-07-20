@@ -1,3 +1,4 @@
+use anyhow::{Context, Error, Result};
 use std::fmt;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -46,7 +47,7 @@ impl fmt::Display for Project {
     }
 }
 
-pub const DEFAULT_FILL: &str = "<not set>";
+pub const DEFAULT_FILL: &str = "____";
 
 /// Implement from(NextupConfig) alternative for Vec<Project>
 pub fn config_to_projects(config: NextupConfig) -> Vec<Project> {
@@ -64,6 +65,7 @@ pub fn config_to_projects(config: NextupConfig) -> Vec<Project> {
     projects
 }
 
+/// Get the Vec<Project> index from project_id (a, b, c) -> (0, 1, 2)
 pub fn map_project_id(id: Option<&String>) -> usize {
     let lineup: Vec<&str> = vec!["a", "b", "c"];
     let index = lineup
@@ -74,5 +76,26 @@ pub fn map_project_id(id: Option<&String>) -> usize {
                 .as_str()
         })
         .unwrap();
+
     index
+}
+
+/// Load project data and convert NextupConfig -> Vec<Projects>
+pub fn load_projects(app_name: &str) -> Result<Vec<Project>, Error> {
+    let cfg: NextupConfig = confy::load(app_name, None)
+        .with_context(|| format!("Could not read the saved nextup data."))?;
+    log::debug!("Loaded config: {:?}", &cfg);
+    let projects: Vec<Project> = config_to_projects(cfg);
+
+    Ok(projects)
+}
+
+/// Convert Vec<Projects> -> NextupConfig and save
+pub fn save_projects(app_name: &str, projects: Vec<Project>) -> Result<(), Error> {
+    let upd_cfg: NextupConfig = NextupConfig::from(projects);
+    confy::store(app_name, None, &upd_cfg)
+        .with_context(|| format!("Could not read the saved nextup data."))?;
+    log::debug!("Saved config: {:?}", &upd_cfg);
+
+    Ok(())
 }
