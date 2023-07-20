@@ -1,3 +1,5 @@
+use std::fmt;
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NextupConfig {
     a: String,
@@ -21,17 +23,30 @@ impl From<Vec<Project>> for NextupConfig {
     fn from(projects: Vec<Project>) -> Self {
         NextupConfig {
             a: format!("{},{}", projects[0].title, projects[0].nextup),
-            b: format!("{},{}", projects[0].title, projects[0].nextup),
-            c: format!("{},{}", projects[0].title, projects[0].nextup),
+            b: format!("{},{}", projects[1].title, projects[1].nextup),
+            c: format!("{},{}", projects[2].title, projects[2].nextup),
         }
     }
 }
 
 #[derive(Debug)]
 pub struct Project {
-    title: String,
-    nextup: String,
+    pub title: String,
+    pub nextup: String,
 }
+
+/// Format the project display to usage spec
+impl fmt::Display for Project {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}\n\t\x1b[94mnextup\x1b[0m: {}\n",
+            self.title, self.nextup
+        )
+    }
+}
+
+pub const DEFAULT_FILL: &str = "<not set>";
 
 /// Implement from(NextupConfig) alternative for Vec<Project>
 pub fn config_to_projects(config: NextupConfig) -> Vec<Project> {
@@ -47,4 +62,17 @@ pub fn config_to_projects(config: NextupConfig) -> Vec<Project> {
         .collect();
 
     projects
+}
+
+pub fn map_project_id(id: Option<&String>) -> usize {
+    let lineup: Vec<&str> = vec!["a", "b", "c"];
+    let index = lineup
+        .iter()
+        .position(|&x| {
+            x == id
+                .expect("Assumed safe to unwrap due to CLI checker")
+                .as_str()
+        })
+        .unwrap();
+    index
 }

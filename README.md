@@ -2,8 +2,6 @@
 
 # Nextup
 
----
-
 <b>keep your barrier to starting development sessions under control by tracking the next action to take on a 
 maximum of 3 active project</b>
 
@@ -18,7 +16,8 @@ maximum of 3 active project</b>
 
 **From Source**
 
----
+Project data will be stored in the standard user-invisible configuration file location for your operating 
+system.  For more information and path lookups see the [`directories` crate](https://crates.io/crates/directories). 
 
 ## Usage
 
@@ -32,7 +31,7 @@ when you next pick the project up or by simply capturing the state you are leavi
 
 Note there is a fixed maximum of 3 projects to focus efforts.
 
-**Flow**
+### Flow
 
 These are some commands you might want to try working into your routine:
 
@@ -96,9 +95,9 @@ c: <not set>
 ```
 
 
-**Analysis**
+### Analysis
 
----
+**TODO** - Usage analysis across project lifespan
 
 ## License
 

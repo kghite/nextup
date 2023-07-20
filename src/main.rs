@@ -19,47 +19,78 @@ fn main() -> Result<()> {
     log::debug!("Running nextup");
 
     // Load the current nextups
-    let cfg: NextupConfig = confy::load("nextup-config", None)
+    let cfg: NextupConfig = confy::load("nextup", None)
         .with_context(|| format!("Could not read the saved nextup data."))?;
-    log::info!("Loaded config: {:?}", &cfg);
+    log::debug!("Loaded config: {:?}", &cfg);
+
+    // Convert config data to project format
     let mut projects: Vec<Project> = config_to_projects(cfg);
-    let new_config: NextupConfig = NextupConfig::from(projects);
 
     // Get commands
     let matches = interface::commands().get_matches();
 
     match matches.subcommand() {
-        Some(("reset", sub_matches)) => println!("'nextup reset' was called"),
-        Some(("set", sub_matches)) => println!(
-            "'nextup set' was called with project: {:?}, description: {:?}",
-            sub_matches.get_one::<String>("project"),
-            sub_matches.get_one::<String>("title"),
-        ),
+        Some(("reset", _sub_matches)) => {
+            log::debug!("'nextup reset' was called");
+            for project in projects.iter_mut() {
+                project.title = String::from(DEFAULT_FILL);
+                project.nextup = String::from(DEFAULT_FILL);
+            }
+            println!("reset all projects");
+        }
+        Some(("set", sub_matches)) => {
+            log::debug!(
+                "'nextup set' was called with project: {:?}, description: {:?}",
+                sub_matches.get_one::<String>("project"),
+                sub_matches.get_one::<String>("title"),
+            );
+            let index: usize = map_project_id(sub_matches.get_one::<String>("project"));
+            let set_project = &mut projects[index];
+            set_project.title = sub_matches
+                .get_one::<String>("title")
+                .expect("Assumed safe to unwrap due to CLI checker")
+                .clone();
+            println!("{}", set_project);
+        }
         _ => {
-            if let Some(nextup) = matches.get_one::<String>("nextup") {
-                println!(
+            if let Some(_nextup) = matches.get_one::<String>("nextup") {
+                log::debug!(
                     "'nextup' was called with project: {:?}, nextup: {:?}",
                     matches.get_one::<String>("project"),
                     matches.get_one::<String>("nextup"),
-                )
-            } else if let Some(project) = matches.get_one::<String>("project") {
-                println!(
+                );
+                let index: usize = map_project_id(matches.get_one::<String>("project"));
+                let set_project = &mut projects[index];
+                set_project.nextup = matches
+                    .get_one::<String>("nextup")
+                    .expect("Assumed safe to unwrap due to CLI checker")
+                    .clone();
+                println!("{}", set_project);
+            } else if let Some(_project) = matches.get_one::<String>("project") {
+                log::debug!(
                     "'nextup' was called with project: {:?}",
                     matches.get_one::<String>("project"),
-                )
+                );
+                let index: usize = map_project_id(matches.get_one::<String>("project"));
+                println!("{}", projects[index]);
             } else {
-                println!("'nextup' was called")
+                log::debug!("'nextup' was called");
+                let lineup: Vec<&str> = vec!["a", "b", "c"];
+                for (i, project) in projects.iter().enumerate() {
+                    println!("{}: {}", lineup[i], project);
+                }
             }
         }
     }
 
-    // Read or update nextups
+    // Convert project data to config format
+    let upd_cfg: NextupConfig = NextupConfig::from(projects);
 
-    // Write any changes
-    // confy::store("nextup-config", None, &new_cfg)
-    //     .with_context(|| format!("Could not read the saved nextup data."))?;
+    // Save any nextup updates
+    confy::store("nextup", None, &upd_cfg)
+        .with_context(|| format!("Could not read the saved nextup data."))?;
 
-    // log::debug!("Saved config: {:?}", &new_cfg);
+    log::debug!("Saved config: {:?}", &upd_cfg);
 
     Ok(())
 }
