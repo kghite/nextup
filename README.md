@@ -3,7 +3,7 @@
 # Nextup
 
 <b>keep your barrier to starting development sessions under control by tracking the next action to take on a 
-maximum of 3 active project</b>
+maximum of 3 active projects</b>
 
 [🛠️ Install](#installation) &nbsp; [📑 Usage](#usage) &nbsp; [📜 License](#license)
 </div>
@@ -12,9 +12,27 @@ maximum of 3 active project</b>
 
 ## Installation
 
-**From Binary Release**
+### From Binary Release
+
+You can find the binary files in the releases for this repository.
+
+**On Ubuntu:** Install with 
+
+    sudo install ./Downloads/nextup /usr/bin
+
+### From [crates.io](crates.io)
+
+    cargo install nextup
 
 **From Source**
+
+You can `cargo run` this repository, adding any arguments with `--`.  To enable the logger, set `RUST_LOG=debug`.
+
+**Example:**
+
+    env RUST_LOG=debug cargo run --bin nextup -- a 'what's nextup for project a'
+
+**Note:**
 
 Project data will be stored in the standard user-invisible configuration file location for your operating 
 system.  For more information and path lookups see the [`directories` crate](https://crates.io/crates/directories). 
@@ -57,7 +75,7 @@ c: FKT the Everest Summit
 
 set
   a: build a lunar lander
-    nextup: <not set>
+    nextup: ____
 ```
 
 `nextup <a, b, c> <nextup>`: sets a project's nextup
@@ -84,14 +102,14 @@ a: build a lunar lander
 ```
 > nextup reset
 
-a: <not set>
-   nextup: <not set>
+a: ____
+   nextup: ____
   
-b: <not set>
-   nextup: <not set>
+b: ____
+   nextup: ____
 
-c: <not set>
-   nextup: <not set>
+c: ____
+   nextup: ____
 ```
 
 

@@ -2,11 +2,13 @@
 name = "nextup"
 version = "0.1.0"
 authors = ["Kathryn Hite <kghite@gmail.com>"]
-description = "nextup keeps your barrier to starting project sessions under control by tracking the next action to take on a maximum of 3 active projects."
+description = "nextup keeps your barrier to starting development sessions under control by tracking the next action to take on a maximum of 3 active projects."
 license = "MIT/X11 OR Apache-2.0"
 repository = "https://github.com/kghite/nextup"
 readme = "README.md"
 edition = "2021"
+keywords = ["cli", "workflow"]
+categories = ["command-line-utilities"]
 
 [dependencies]
 anyhow = { version = "1.0" }

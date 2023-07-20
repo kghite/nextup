@@ -1,6 +1,6 @@
 use clap::{arg, Command};
 
-const ABOUT: &str = "\x1b[94mnextup\x1b[0m keeps your barrier to starting project sessions \
+const ABOUT: &str = "\x1b[94mnextup\x1b[0m keeps your barrier to starting development sessions \
                     under control by tracking the next action to take on a maximum of 3 \
                     active projects.";
 
