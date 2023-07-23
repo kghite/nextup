@@ -12,9 +12,9 @@ pub struct NextupConfig {
 impl Default for NextupConfig {
     fn default() -> Self {
         NextupConfig {
-            a: "project,nextup".to_string(),
-            b: "project,nextup".to_string(),
-            c: "project,nextup".to_string(),
+            a: "project!:!nextup".to_string(),
+            b: "project!:!nextup".to_string(),
+            c: "project!:!nextup".to_string(),
         }
     }
 }
@@ -23,9 +23,9 @@ impl Default for NextupConfig {
 impl From<Vec<Project>> for NextupConfig {
     fn from(projects: Vec<Project>) -> Self {
         NextupConfig {
-            a: format!("{},{}", projects[0].title, projects[0].nextup),
-            b: format!("{},{}", projects[1].title, projects[1].nextup),
-            c: format!("{},{}", projects[2].title, projects[2].nextup),
+            a: format!("{}!:!{}", projects[0].title, projects[0].nextup),
+            b: format!("{}!:!{}", projects[1].title, projects[1].nextup),
+            c: format!("{}!:!{}", projects[2].title, projects[2].nextup),
         }
     }
 }
@@ -54,7 +54,7 @@ pub fn config_to_projects(config: NextupConfig) -> Vec<Project> {
     let projects: Vec<Project> = [config.a, config.b, config.c]
         .into_iter()
         .map(|pair| {
-            let split: Vec<&str> = pair.split(",").collect();
+            let split: Vec<&str> = pair.split("!:!").collect();
             Project {
                 title: split[0].to_string(),
                 nextup: split[1].to_string(),
