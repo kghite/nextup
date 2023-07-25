@@ -12,9 +12,9 @@ pub struct NextupConfig {
 impl Default for NextupConfig {
     fn default() -> Self {
         NextupConfig {
-            a: "project!:!nextup".to_string(),
-            b: "project!:!nextup".to_string(),
-            c: "project!:!nextup".to_string(),
+            a: "____!:!____".to_string(),
+            b: "____!:!____".to_string(),
+            c: "____!:!____".to_string(),
         }
     }
 }
