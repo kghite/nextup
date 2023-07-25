@@ -16,14 +16,14 @@ pub use crate::cli::writer;
 ///
 /// Allow the user to set up to 3 projects and update their 'nextup' tasks
 fn main() -> Result<()> {
-    let app_name: &str = env!("CARGO_PKG_NAME");
+    let app_name: String = format!("{}-{}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
 
     // Init logger
     env_logger::init();
     log::debug!("Running nextup");
 
     // Load the current projects
-    let mut projects: Vec<Project> = load_projects(app_name)?;
+    let mut projects: Vec<Project> = load_projects(app_name.as_str())?;
 
     // Map commands
     let matches = interface::commands().get_matches();
@@ -53,7 +53,7 @@ fn main() -> Result<()> {
     }
 
     // Save the updated projects
-    save_projects(app_name, projects)?;
+    save_projects(app_name.as_str(), projects)?;
 
     Ok(())
 }
