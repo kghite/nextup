@@ -5,37 +5,10 @@
 <b>keep your barrier to starting development sessions under control by tracking the next action to take on a 
 maximum of 3 active projects</b>
 
-[🛠️ Install](#installation) &nbsp; [📑 Usage](#usage) &nbsp; [📜 License](#license)
+[📑 Usage](#usage) &nbsp; [🛠️ Install](#installation) &nbsp; [📜 License](#license)
 </div>
 
 ---
-
-## Installation
-
-### From Binary Release
-
-You can find the binary files in the releases for this repository.
-
-**On Ubuntu:** Install with 
-
-    sudo install ./Downloads/nextup /usr/bin
-
-### From [crates.io](crates.io)
-
-    cargo install nextup
-
-**From Source**
-
-You can `cargo run` this repository, adding any arguments with `--`.  To enable the logger, set `RUST_LOG=debug`.
-
-**Example:**
-
-    env RUST_LOG=debug cargo run --bin nextup -- a 'what's nextup for project a'
-
-**Note:**
-
-Project data will be stored in the standard user-invisible configuration file location for your operating 
-system.  For more information and path lookups see the [`directories` crate](https://crates.io/crates/directories). 
 
 ## Usage
 
@@ -116,6 +89,38 @@ c: ____
 ### Analysis
 
 **TODO** - Usage analysis across project lifespan
+
+
+## Installation
+
+### From Binary Release
+
+You can find the binary files in the releases for this repository.
+
+**On Ubuntu:** Install with 
+
+    sudo install ./Downloads/nextup /usr/bin
+
+### From [crates.io](crates.io)
+
+    cargo install nextup
+
+### From Source
+
+You can `cargo run` this repository, adding any arguments with `--`.  To enable the logger, set `RUST_LOG=debug`.
+
+**Example:**
+
+    env RUST_LOG=debug cargo run --bin nextup -- a 'what's nextup for project a'
+
+### Where is my data going?
+
+Project data is stored in the standard user-invisible configuration file location for your operating 
+system.  For more information and path lookups see the [`directories` crate](https://crates.
+io/crates/directories). 
+
+Log data powering the analysis features is stored in a local SQLLite database file as described in the docs for the 
+[turbosql crate](https://docs.rs/turbosql/latest/turbosql/#wheres-my-data).
 
 ## License
 
