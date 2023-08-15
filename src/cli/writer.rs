@@ -19,6 +19,7 @@ pub fn write_title(projects: &mut Vec<Project>, sub_matches: &ArgMatches) {
         .get_one::<String>("title")
         .expect("Assumed safe to unwrap due to CLI checker")
         .clone();
+    set_project.nextup = String::from(DEFAULT_FILL); // Reset nextup for new project title
 
     println!("{}", set_project);
 }
