@@ -24,7 +24,7 @@ struct AuditLog {
 impl dbLog for AuditLog{}
 
 /// Log nextup write actions for analysis
-pub fn log_write_action<Loggable:dbLog>(action: &mut Loggable) -> Result<(), Error>  {
+pub fn log_write_action<Loggable:dbLog>(action: &mut Loggable) -> Result<i64, Error>  {
     let rowid = action.insert().with_context(|| format!("Could not save action to the db."))?;
-    Ok(())
+    Ok(rowid)
 }
