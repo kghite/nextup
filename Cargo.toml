@@ -1,6 +1,6 @@
 [package]
 name = "nextup"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Kathryn Hite <kghite@gmail.com>"]
 description = "nextup keeps your barrier to starting development sessions under control by tracking the next action to take on a maximum of 3 active projects."
 license = "MIT/X11 OR Apache-2.0"
