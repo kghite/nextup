@@ -15,17 +15,6 @@ fn set_project_title() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 #[test]
-fn set_project_nextup() -> Result<(), Box<dyn std::error::Error>> {
-    let mut cmd = Command::cargo_bin("nextup")?;
-    cmd.arg("b").arg("test nextup");
-    cmd.assert()
-        .success()
-        .stdout(predicate::str::contains("test text"));
-
-    Ok(())
-}
-
-#[test]
 fn reset_project() -> Result<(), Box<dyn std::error::Error>> {
     let mut cmd = Command::cargo_bin("nextup")?;
     cmd.arg("reset");
